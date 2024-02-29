@@ -1,0 +1,240 @@
+---
+title: "Selection of AB Data"
+author: "Maveen Mallah"
+date: "2024-02-27"
+output: 
+  pdf_document:
+    includes:
+      in_header: header.tex
+---
+
+```{r packs, include=FALSE}
+library(readr)
+library(tidyverse)
+library(haven)
+library(knitr)
+library(tibble)
+library(dplyr)
+library(gapminder) 
+library(kableExtra)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, 
+  eval = TRUE, 
+  fig.align = 'center', 
+  message = FALSE, 
+  warning = FALSE
+  )
+```
+
+```{r, include=FALSE}
+knitr::opts_chunk$set( 
+  inline = function(x) {
+    if(!is.numeric(x)){x}else{
+      prettyNum(round(x, 2), big.mark = ",")
+    }
+  }
+  )
+```
+
+```{r, include=FALSE}
+cbfactor = function(.data, x) {
+  x = enquo(x)
+  count(.data, !!x) |> 
+    mutate(
+      values = as.numeric(!!x), 
+      labels = as_factor(!!x), 
+      freq = n, 
+      perc = n/ sum(n) *100, 
+      .keep = 'unused'
+    )  |> 
+    knitr::kable(format = 'pipe', digits = 1L)
+}
+```
+
+```{r, include=FALSE}
+ARAB123 = read_csv('ARAB123.csv')
+combined_dataset = read_csv('dataset.csv')
+
+FctWhen= function(...){
+  args = rlang::list2(...)
+  rhs = map(args, rlang::f_rhs)
+  cases = case_when(!!!args)
+  exec(fct_relevel, cases, !!!rhs)}
+```
+
+**OVERVIEW:** 
+
+
+The Arab Barometer dataset contains survey data collected from individuals across multiple countries in the Arab world. The dataset provides valuable insights into public opinion, attitudes, and behaviors on various socio-political issues in the region.
+
+
+The dataset is provided in multiple files, each corresponding to a specific wave or part of the Arab Barometer survey.
+Arab_Barometer_Wave_1.csv: Data from Wave 1 of the survey.
+Arab_Barometer_Wave_2.csv: Data from Wave 2 of the survey.
+Arab_Barometer_Wave_3.csv: Data from Wave 3 of the survey.
+
+
+The data in this dataset were sourced from the Arab Barometer survey, a reputable cross-national survey conducted in the Arab world. The survey aims to understand public opinion, attitudes, and behaviors on a wide range of topics, including politics, society, and economy.
+
+
+For inquiries or questions about the dataset, please contact mm3664a@american.edu
+
+**SOURCES AND METHODOLOGY:**
+
+Arab Barometer. (2021). Arab Barometer Wave VI (July 2020 - April 2021): Part 1, Part 2, Part 3 Arab Barometer. [https://www.arabbarometer.org/survey-data/data-downloads/].
+
+All of the data analyzed in this study were sourced from the Arab Barometer Wave VI, conducted between July 2020 and April 2021. The dataset includes data from three parts of the survey, namely Part 1, Part 2, and Part 3. The Arab Barometer Survey is a reputable cross-national survey conducted in the Arab world, aimed at understanding public opinion and attitudes on various socio-political issues across the region.
+
+
+**NOTE ON MISSING VALUES:**
+
+In the original dataset, missing values are coded with the numbers 98 and 99. In the combined_dataset.csv and ARAB1234.csv missing values are coded as NA. These codes are used to represent responses that are not available or not applicable for certain variables.
+
+**VARIABLES:**
+
+
+**Country**
+
+Variable Name: c_name 
+
+Variable Type: Character 
+
+Description: Name of Country
+
+**Source**
+
+Variable Name: source 
+
+Variable Type: Character 
+
+Description: the origin or originator of the data 
+
+**Respondent Identification Number**
+
+Variable Name: r_id
+
+Variable Type: Character 
+
+Description: unique identifier assigned to each respondent in the survey
+
+**Year**
+
+Variable Name: r_year
+
+Variable Type: Numeric 
+
+Description: corresponding calendar year 
+```{r, echo=FALSE}
+cbfactor(ARAB123,r_year)
+```
+
+**Month**
+
+Variable Name: r_month
+
+Variable Type: Numeric 
+
+Description: corresponding calendar month 
+
+```{r, echo=FALSE} 
+cbfactor(ARAB123,r_month)
+```
+
+**Survey Weight**
+
+Variable Name: r_swt
+
+Variable Type: Numeric 
+
+Description: value assigned to each respondent in the survey dataset
+
+**Gender**
+
+Variable Name: r_female
+
+Variable Type: Categorical
+
+Description: binary indicator of gender, where a value of 1 typically represents females and a value of 0
+```{r, echo=FALSE}
+cbfactor(combined_dataset,r_female_factor)
+```
+
+**Political Ideology**
+
+Variable Name: p_ideology
+
+Variable Type: Categorical 
+
+Description: Respondents' preferred country from which they would choose to receive a COVID-19 vaccine 
+```{r, echo=FALSE}
+cbfactor(combined_dataset,p_ideology_factor)
+```
+
+**Political Interest**
+
+Variable Name: p_interest
+
+Variable Type: Ordinal 
+
+Description: Respondents' internet usage to access media 
+```{r, echo=FALSE}
+cbfactor(combined_dataset,p_interest_factor)
+```
+
+**Political Economy**
+
+Variable Name: p_economy 
+
+Variable Type: Ordinal 
+
+Description: Respondents' perceptions of the economic situation in their country
+```{r, echo=FALSE}
+cbfactor(combined_dataset,p_economy_factor)
+```
+
+**Core Values**
+
+Variable Name: core_values
+
+Variable Type: Ordinal 
+
+Description: Respondents' ideological orientations, values, and beliefs regarding governance and society
+```{r, echo=FALSE}
+cbfactor(combined_dataset,core_values_factor)
+```
+
+**Democracy**
+
+Variable Name: d_essential
+
+Variable Type: Ordinal 
+
+Description: Respondents' views on the essentiality of democracy in their country
+```{r, echo=FALSE}
+cbfactor(combined_dataset,d_essential_factor)
+```
+
+**Country Governance**
+
+Variable Name: c_govern
+
+Variable Type: Ordinal 
+
+Description: Respondents' attitudes towards their government's performance
+```{r, echo=FALSE}
+cbfactor(combined_dataset,c_govern_factor)
+```
+
+**Institutional Trust**
+
+Variable Name: i_trust
+
+Variable Type: Ordinal 
+
+Description: Respondents' level of confidence and faith that individuals have in key societal actors and institutions
+```{r, echo=FALSE}
+cbfactor(combined_dataset,i_trust_factor)
+```
